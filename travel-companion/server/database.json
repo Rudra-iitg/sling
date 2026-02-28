@@ -12,6 +12,19 @@
       "totalTrips": 0,
       "createdAt": "2026-02-28T18:50:09.689Z",
       "updatedAt": "2026-02-28T18:50:09.689Z"
+    },
+    {
+      "id": "mm6quf44zkih1i52xpi",
+      "email": "test@example.com",
+      "password": "$2a$10$pXMoaz5wja/Ss3pSIoa9uu8ahzvdrtNtMpUCnQKQupUoRO.OVZmEy",
+      "fullName": "Test User",
+      "phone": null,
+      "avatar": "default-avatar.png",
+      "bio": null,
+      "rating": 5,
+      "totalTrips": 0,
+      "createdAt": "2026-02-28T19:58:27.844Z",
+      "updatedAt": "2026-02-28T19:58:27.844Z"
     }
   ],
   "trips": [],
