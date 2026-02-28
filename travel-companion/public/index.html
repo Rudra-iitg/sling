@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelCompanion - Find Your Perfect Travel Buddy</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" onclick="showPage('home')">
+                <i class="fas fa-route"></i>
+                <span>TravelCompanion</span>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="#" onclick="showPage('home')" class="nav-link active">Home</a>
+                <a href="#" onclick="showPage('search')" class="nav-link">Find Trips</a>
+                <a href="#" onclick="showPage('create-trip')" class="nav-link create-btn" id="createTripNav" style="display:none;">
+                    <i class="fas fa-plus"></i> Create Trip
+                </a>
+            </div>
+            <div class="nav-auth" id="navAuth">
+                <button class="btn btn-outline" onclick="showModal('loginModal')">Login</button>
+                <button class="btn btn-primary" onclick="showModal('registerModal')">Sign Up</button>
+            </div>
+            <div class="nav-user" id="navUser" style="display:none;">
+                <button class="notification-btn" onclick="showModal('notificationsModal')">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
+                </button>
+                <div class="user-dropdown">
+                    <button class="user-btn" onclick="toggleDropdown()">
+                        <div class="user-avatar" id="userAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#" onclick="showPage('profile')"><i class="fas fa-user"></i> My Profile</a>
+                        <a href="#" onclick="showPage('my-trips')"><i class="fas fa-suitcase"></i> My Trips</a>
+                        <a href="#" onclick="showPage('settings')"><i class="fas fa-cog"></i> Settings</a>
+                        <hr>
+                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="heroSection">
+        <div class="hero-background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <h1>Travel Together, Save Together</h1>
+            <p>Find travel companions for your journeys. Share rides, split costs, and make new friends along the way.</p>
+            <div class="hero-search">
+                <div class="search-box">
+                    <div class="search-input">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" id="heroOrigin" placeholder="Your location" autocomplete="off">
+                    </div>
+                    <div class="search-input">
+                        <i class="fas fa-search-location"></i>
+                        <input type="text" id="heroDestination" placeholder="Where do you want to go?" autocomplete="off">
+                    </div>
+                    <button class="btn btn-primary btn-lg" onclick="searchFromHero()">
+                        <i class="fas fa-search"></i> Find Companions
+                    </button>
+                </div>
+                <div class="hero-features">
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Verified Users</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-dollar-sign"></i>
+                        <span>Save Money</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-users"></i>
+                        <span>Meet People</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Page -->
+        <div class="page active" id="homePage">
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="container">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-number" id="statUsers">10,000+</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-route"></i></div>
+                            <div class="stat-number" id="statTrips">5,000+</div>
+                            <div class="stat-label">Trips Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-map-marked-alt"></i></div>
+                            <div class="stat-number" id="statCities">100+</div>
+                            <div class="stat-label">Cities Covered</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-star"></i></div>
+                            <div class="stat-number" id="statRating">4.8</div>
+                            <div class="stat-label">Average Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- How It Works -->
+            <section class="how-it-works">
+                <div class="container">
+                    <h2 class="section-title">How It Works</h2>
+                    <p class="section-subtitle">Find your travel companion in three simple steps</p>
+                    <div class="steps-grid">
+                        <div class="step-card">
+                            <div class="step-number">1</div>
+                            <div class="step-icon"><i class="fas fa-search"></i></div>
+                            <h3>Search Trips</h3>
+                            <p>Enter your starting point and destination to find travelers going your way.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">2</div>
+                            <div class="step-icon"><i class="fas fa-handshake"></i></div>
+                            <h3>Connect</h3>
+                            <p>Browse profiles, read reviews, and connect with compatible travel companions.</p>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-number">3</div>
+                            <div class="step-icon"><i class="fas fa-car-side"></i></div>
+                            <h3>Travel Together</h3>
+                            <p>Meet up and enjoy your journey with new friends while sharing costs.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Trips -->
+            <section class="featured-trips">
+                <div class="container">
+                    <h2 class="section-title">Recent Trips</h2>
+                    <p class="section-subtitle">Join these upcoming journeys</p>
+                    <div class="trips-grid" id="featuredTripsGrid">
+                        <!-- Trips will be loaded here -->
+                    </div>
+                    <div class="text-center" style="margin-top: 2rem;">
+                        <button class="btn btn-primary btn-lg" onclick="showPage('search')">
+                            View All Trips <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <section class="why-choose-us">
+                <div class="container">
+                    <h2 class="section-title">Why Choose TravelCompanion?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-lock"></i></div>
+                            <h3>Safe & Secure</h3>
+                            <p>All users are verified with ID checks and phone verification for your safety.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-wallet"></i></div>
+                            <h3>Save Money</h3>
+                            <p>Split travel costs with companions and save up to 70% on your journeys.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                            <h3>Easy Communication</h3>
+                            <p>Chat with your companions before the trip to plan and coordinate easily.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-star-half-alt"></i></div>
+                            <h3>Trusted Reviews</h3>
+                            <p>Read reviews from other travelers to make informed decisions.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Search Page -->
+        <div class="page" id="searchPage">
+            <div class="container">
+                <div class="search-page-header">
+                    <h1>Find Your Perfect Travel Companion</h1>
+                    <p>Search for trips and connect with fellow travelers</p>
+                </div>
+
+                <!-- Search Filters -->
+                <div class="search-filters">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Your Location</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" id="searchOrigin" placeholder="Enter your location" autocomplete="off">
+                                <button class="btn btn-icon" onclick="getCurrentLocation()" title="Use current location">
+                                    <i class="fas fa-crosshairs"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label>Search Radius</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-circle-notch"></i>
+                                <select id="searchRadius">
+                                    <option value="5">5 km</option>
+                                    <option value="10" selected>10 km</option>
+                                    <option value="25">25 km</option>
+                                    <option value="50">50 km</option>
+                                    <option value="100">100 km</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label>Transport Mode</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-car"></i>
+                                <select id="searchTransport">
+                                    <option value="">All Modes</option>
+                                    <option value="car">Car</option>
+                                    <option value="bike">Bike</option>
+                                    <option value="train">Train</option>
+                                    <option value="bus">Bus</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <label>Date</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-calendar"></i>
+                                <input type="date" id="searchDate">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="searchTrips()">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Map View -->
+                <div class="map-section">
+                    <div class="map-container" id="searchMap"></div>
+                </div>
+
+                <!-- Results -->
+                <div class="search-results">
+                    <div class="results-header">
+                        <h3 id="resultsTitle">Available Trips</h3>
+                        <div class="view-toggle">
+                            <button class="view-btn active" onclick="setViewMode('grid')" id="gridViewBtn">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                            <button class="view-btn" onclick="setViewMode('list')" id="listViewBtn">
+                                <i class="fas fa-list"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="trips-grid" id="searchResultsGrid">
+                        <!-- Results will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Trip Page -->
+        <div class="page" id="createTripPage">
+            <div class="container">
+                <div class="form-page">
+                    <div class="form-header">
+                        <h1><i class="fas fa-plus-circle"></i> Create a New Trip</h1>
+                        <p>Share your journey and find travel companions</p>
+                    </div>
+
+                    <form class="trip-form" id="createTripForm" onsubmit="createTrip(event)">
+                        <div class="form-section">
+                            <h3><i class="fas fa-info-circle"></i> Trip Details</h3>
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label>Trip Title *</label>
+                                    <input type="text" id="tripTitle" placeholder="e.g., Weekend trip to the mountains" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Description</label>
+                                    <textarea id="tripDescription" rows="3" placeholder="Tell potential companions about your trip..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Transport Mode *</label>
+                                    <select id="tripTransport" required>
+                                        <option value="car">Car</option>
+                                        <option value="bike">Bike</option>
+                                        <option value="train">Train</option>
+                                        <option value="bus">Bus</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Price per Person</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-rupee-sign"></i>
+                                        <input type="number" id="tripPrice" placeholder="0" min="0" step="0.01">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-map-marked-alt"></i> Route</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Origin *</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-play-circle"></i>
+                                        <input type="text" id="tripOrigin" placeholder="Starting point" autocomplete="off" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Destination *</label>
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-flag-checkered"></i>
+                                        <input type="text" id="tripDestination" placeholder="Where you're going" autocomplete="off" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Search Radius (km) *</label>
+                                <input type="number" id="tripRadius" value="10" min="1" max="500" required>
+                                <small>People within this radius of your origin will see your trip</small>
+                            </div>
+                            <div class="map-picker-container">
+                                <div class="map-container" id="createTripMap"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-clock"></i> Schedule</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Departure Date *</label>
+                                    <input type="date" id="tripDepartureDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Departure Time *</label>
+                                    <input type="time" id="tripDepartureTime" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Return Date</label>
+                                    <input type="date" id="tripReturnDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>Return Time</label>
+                                    <input type="time" id="tripReturnTime">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-users"></i> Companions</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label>Maximum Companions *</label>
+                                    <input type="number" id="tripMaxCompanions" value="3" min="1" max="10" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>Additional Information</label>
+                                    <textarea id="tripAdditionalInfo" rows="2" placeholder="Any additional details (luggage restrictions, stops, etc.)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="showPage('home')">Cancel</button>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane"></i> Create Trip
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trip Detail Page -->
+        <div class="page" id="tripDetailPage">
+            <div class="container">
+                <div class="trip-detail" id="tripDetailContent">
+                    <!-- Content loaded dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div class="page" id="profilePage">
+            <div class="container">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-info">
+                            <h1 id="profileName">User Name</h1>
+                            <p id="profileBio">No bio yet</p>
+                            <div class="profile-stats">
+                                <div class="profile-stat">
+                                    <i class="fas fa-star"></i>
+                                    <span id="profileRating">5.0</span> Rating
+                                </div>
+                                <div class="profile-stat">
+                                    <i class="fas fa-route"></i>
+                                    <span id="profileTrips">0</span> Trips
+                                </div>
+                                <div class="profile-stat">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Member since <span id="profileJoined">2024</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showModal('editProfileModal')">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </button>
+                    </div>
+                    <div class="profile-content">
+                        <div class="profile-tabs">
+                            <button class="tab-btn active" onclick="showProfileTab('about')">About</button>
+                            <button class="tab-btn" onclick="showProfileTab('reviews')">Reviews</button>
+                        </div>
+                        <div class="tab-content active" id="aboutTab">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <div>
+                                        <label>Email</label>
+                                        <span id="profileEmail">email@example.com</span>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-phone"></i>
+                                    <div>
+                                        <label>Phone</label>
+                                        <span id="profilePhone">Not provided</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-content" id="reviewsTab">
+                            <div class="reviews-list" id="profileReviews">
+                                <!-- Reviews loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- My Trips Page -->
+        <div class="page" id="myTripsPage">
+            <div class="container">
+                <div class="my-trips-header">
+                    <h1>My Trips</h1>
+                    <button class="btn btn-primary" onclick="showPage('create-trip')">
+                        <i class="fas fa-plus"></i> Create New Trip
+                    </button>
+                </div>
+                <div class="trips-tabs">
+                    <button class="tab-btn active" onclick="showMyTripsTab('created')">Created Trips</button>
+                    <button class="tab-btn" onclick="showMyTripsTab('joined')">Joined Trips</button>
+                </div>
+                <div class="tab-content active" id="createdTab">
+                    <div class="trips-grid" id="createdTripsGrid">
+                        <!-- Created trips loaded here -->
+                    </div>
+                </div>
+                <div class="tab-content" id="joinedTab">
+                    <div class="trips-grid" id="joinedTripsGrid">
+                        <!-- Joined trips loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div class="page" id="settingsPage">
+            <div class="container">
+                <div class="settings-container">
+                    <h1>Settings</h1>
+                    <div class="settings-section">
+                        <h3><i class="fas fa-lock"></i> Change Password</h3>
+                        <form onsubmit="changePassword(event)">
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" id="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="newPassword" required minlength="6">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" id="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update Password</button>
+                        </form>
+                    </div>
+                    <div class="settings-section">
+                        <h3><i class="fas fa-bell"></i> Notification Preferences</h3>
+                        <div class="toggle-group">
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span>Email notifications for new trip matches</span>
+                        </div>
+                        <div class="toggle-group">
+                            <label class="toggle">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <span>Push notifications for messages</span>
+                        </div>
+                    </div>
+                    <div class="settings-section danger">
+                        <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+                        <button class="btn btn-danger" onclick="confirmDeleteAccount()">Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h4>TravelCompanion</h4>
+                    <p>Connecting travelers for safer, cheaper, and more enjoyable journeys.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#" onclick="showPage('home')">Home</a></li>
+                        <li><a href="#" onclick="showPage('search')">Find Trips</a></li>
+                        <li><a href="#" onclick="showModal('registerModal')">Sign Up</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Safety Tips</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TravelCompanion. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('loginModal')">&times;</button>
+            <h2>Welcome Back</h2>
+            <p class="modal-subtitle">Login to your account</p>
+            <form onsubmit="login(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+            </form>
+            <p class="modal-footer">Don't have an account? <a href="#" onclick="closeModal('loginModal'); showModal('registerModal')">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('registerModal')">&times;</button>
+            <h2>Create Account</h2>
+            <p class="modal-subtitle">Join our travel community</p>
+            <form onsubmit="register(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="registerName" placeholder="Enter your full name" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="registerPhone" placeholder="Enter your phone number">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="registerPassword" placeholder="Create a password" required minlength="6">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+            </form>
+            <p class="modal-footer">Already have an account? <a href="#" onclick="closeModal('registerModal'); showModal('loginModal')">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('editProfileModal')">&times;</button>
+            <h2>Edit Profile</h2>
+            <form onsubmit="updateProfile(event)">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="editPhone">
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="editBio" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editProfileModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div class="modal" id="notificationsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('notificationsModal')">&times;</button>
+            <h2>Notifications</h2>
+            <div class="notifications-list" id="notificationsList">
+                <!-- Notifications loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Trip Card Template -->
+    <template id="tripCardTemplate">
+        <div class="trip-card" onclick="viewTrip(this.dataset.tripId)">
+            <div class="trip-card-header">
+                <span class="trip-transport"><i class="fas fa-car"></i></span>
+                <span class="trip-price"></span>
+            </div>
+            <h3 class="trip-title"></h3>
+            <div class="trip-route">
+                <div class="route-point">
+                    <div class="route-dot origin"></div>
+                    <span class="route-address"></span>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-point">
+                    <div class="route-dot destination"></div>
+                    <span class="route-address"></span>
+                </div>
+            </div>
+            <div class="trip-info">
+                <div class="trip-info-item">
+                    <i class="fas fa-calendar"></i>
+                    <span class="trip-date"></span>
+                </div>
+                <div class="trip-info-item">
+                    <i class="fas fa-clock"></i>
+                    <span class="trip-time"></span>
+                </div>
+                <div class="trip-info-item">
+                    <i class="fas fa-users"></i>
+                    <span class="trip-companions"></span>
+                </div>
+            </div>
+            <div class="trip-creator">
+                <div class="creator-avatar"><i class="fas fa-user"></i></div>
+                <div class="creator-info">
+                    <span class="creator-name"></span>
+                    <span class="creator-rating"><i class="fas fa-star"></i> <span class="rating-value"></span></span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-content">
+            <i class="toast-icon fas fa-check-circle"></i>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

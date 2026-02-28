@@ -1,0 +1,22 @@
+{
+  "users": [
+    {
+      "id": "mm6oekyhac1w8ot2j6u",
+      "email": "rudrarajjha2004@gmail.com",
+      "password": "$2a$10$TR1i5Nlc8BSfyhL/EPpf0.ijFZ48EdQCC/ZfvW1Jv2CZGTS3YVt3y",
+      "fullName": "RUDRA JHA",
+      "phone": "8453706978",
+      "avatar": "default-avatar.png",
+      "bio": null,
+      "rating": 5,
+      "totalTrips": 0,
+      "createdAt": "2026-02-28T18:50:09.689Z",
+      "updatedAt": "2026-02-28T18:50:09.689Z"
+    }
+  ],
+  "trips": [],
+  "tripParticipants": [],
+  "reviews": [],
+  "messages": [],
+  "notifications": []
+}
