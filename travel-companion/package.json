@@ -1,11 +1,44 @@
 {
-  "name": "travel-companion",
+  "name": "sling-travel-companion",
   "version": "1.0.0",
-  "description": "Find travel companions for your journeys",
+  "description": "A modern travel companion platform that connects travelers heading in the same direction. Share rides, split costs, and make new friends along the way.",
   "main": "server/index.js",
   "scripts": {
     "start": "node server/index.js",
-    "dev": "node server/index.js"
+    "dev": "NODE_ENV=development node server/index.js",
+    "prod": "NODE_ENV=production node server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "travel",
+    "companion",
+    "ride-sharing",
+    "carpooling",
+    "travel-buddy",
+    "rideshare",
+    "trip",
+    "journey",
+    "transportation",
+    "cost-sharing"
+  ],
+  "author": {
+    "name": "Rudra",
+    "email": "rudra@example.com",
+    "url": "https://github.com/Rudra-iitg"
+  },
+  "contributors": [],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rudra-iitg/sling.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Rudra-iitg/sling/issues"
+  },
+  "homepage": "https://github.com/Rudra-iitg/sling#readme",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -14,5 +47,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.1",
     "uuid": "^9.0.0"
-  }
+  },
+  "devDependencies": {}
 }
